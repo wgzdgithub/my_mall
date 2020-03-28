@@ -22,31 +22,21 @@ ORDER_STATUS_CHOICES = (
 
 class Order(models.Model):
     """订单模块"""
-    order_id = models.CharField("订单唯一ID", max_length=32)
-    user_id = models.ForeignKey(User, related_name='orders')
-    address = models.CharField("收货地址", max_length=256)
-    total_price = models.IntegerField("总价")
+    order_id = models.IntegerField("订单唯一ID")
+    user_id = models.IntegerField('用户ID')
     status = models.SmallIntegerField("订单状态",
                                       choices=ORDER_STATUS_CHOICES,
                                       default=ORDER_STATUS_SUBMIT)
-    goods_count = models.IntegerField("商品数量")
+    order_time = models.DateTimeField("下单时间", auto_now_add=True)
 
     class Meta:
         db_table = 'mine_order'
 
 
 class Cart(models.Model):
-    user_id = models.ForeignKey(User, related_name='carts')
-    product = models.ForeignKey(Product)
-    order = models.ForeignKey(Order, verbose_name='订单', null=True)
-    count = models.PositiveIntegerField("购买数量")
-    amount = models.FloatField('总额')
-    create_time = models.DateTimeField("下单时间", auto_now_add=True)
-    update_time = models.DateTimeField("购买日期", auto_now=True)
-    status = models.SmallIntegerField('状态',
-                                      choices=ORDER_STATUS_CHOICES,
-                                      default=ORDER_STATUS_INIT)
+    order_id = models.CharField('订单id', max_length=32)
+    goods_id = models.CharField('商品id', max_length=256)
 
     class Meta:
         db_table = 'mine_cart'
-        unique_together = ("user_id", "product", "order")
+        unique_together = ("order_id", "goods_id")
