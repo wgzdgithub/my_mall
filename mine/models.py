@@ -21,6 +21,7 @@ ORDER_STATUS_CHOICES = (
 
 
 class Order(models.Model):
+    """订单模块"""
     order_id = models.CharField("订单唯一ID", max_length=32)
     user_id = models.ForeignKey(User, related_name='orders')
     address = models.CharField("收货地址", max_length=256)
