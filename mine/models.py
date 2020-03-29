@@ -36,6 +36,7 @@ class Order(models.Model):
 class Cart(models.Model):
     order_id = models.CharField('订单id', max_length=32)
     goods_id = models.CharField('商品id', max_length=256)
+    goods_num = models.IntegerField("商品数量")
 
     class Meta:
         db_table = 'mine_cart'

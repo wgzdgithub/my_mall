@@ -1,3 +1,4 @@
+from django.core import serializers
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
@@ -12,6 +13,7 @@ def cart_add(request):
         test1 = Cart(
             order_id=request.POST.get('order_id'),
             goods_id=request.POST.get("goods_id"),
+            goods_num=request.POST.get("goods_num"),
         )
         test1.save()
         return HttpResponse("<p>添加成功！</p>")
@@ -39,6 +41,7 @@ def cart_change(request):
         if nameIndb:
             nameIndb.order_id = request.POST.get('order_id')
             nameIndb.goods_id = request.POST.get('goods_id')
+            nameIndb.goods_num = request.POST.get('goods_num')
             nameIndb.save()
             return HttpResponse(f'<p>{id}修改成功!</p>')
         else:
@@ -51,12 +54,10 @@ def cart_select(request):
         order_id = request.POST.get('order_id')
         nameIndb = Cart.objects.filter(order_id=order_id)
         if nameIndb:
-            lst = []
-            for i in nameIndb:
-                lst.append(f'order_id:{i.order_id},goods_id:{i.goods_id}\n')
-            return HttpResponse(lst)
+            isdict = serializers.serialize('json', nameIndb)
+            return JsonResponse(isdict, safe=False)
         else:
-            return HttpResponse(f'<p>输入有误,{order_id}不存在')
+            return HttpResponse(f'<p>输入有误,{order_id}不存在</p>')
 
 
 @csrf_exempt
@@ -108,10 +109,7 @@ def order_select(request):
         order_id = request.POST.get('order_id')
         nameIndb = Order.objects.filter(order_id=order_id).first()
         if nameIndb:
-            return HttpResponse(f'<p>order_id:{nameIndb.order_id},'
-                                f'user_id{nameIndb.user_id},'
-                                f'status{nameIndb.status},'
-                                f'order_time{nameIndb.order_time},</p>'
-                                )
+            isdict = serializers.serialize('json', nameIndb)
+            return JsonResponse(isdict, safe=False)
         else:
             return HttpResponse(f'<p>输入有误,{order_id}不存在')

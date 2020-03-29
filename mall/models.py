@@ -20,3 +20,4 @@ class Product(models.Model):
 
     class Meta:
         db_table = 'mall_product'
+

@@ -1,4 +1,5 @@
-from django.http import HttpResponse
+from django.core import serializers
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
@@ -51,12 +52,9 @@ def change(request):
 def select(request):
     if request.method == 'POST':
         uid = request.POST.get('uid')
-        nameIndb = Product.objects.filter(uid=uid).first()
+        nameIndb = Product.objects.filter(uid=uid)
         if nameIndb:
-            return HttpResponse(f'<p>uid:{nameIndb.uid},'
-                                f'商品名字:{nameIndb.name},'
-                                f' 价格:{nameIndb.price},'
-                                f' 商品分类:{nameIndb.category}</p>'
-                                )
+            isdict = serializers.serialize('json', nameIndb)
+            return JsonResponse(isdict, safe=False)
         else:
             return HttpResponse(f'<p>输入有误,{uid}不存在')

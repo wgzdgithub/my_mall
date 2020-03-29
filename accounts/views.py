@@ -1,4 +1,5 @@
-from django.http import HttpResponse
+from django.core import serializers
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
@@ -48,11 +49,9 @@ def change(request):
 def select(request):
     if request.method == 'POST':
         user_name = request.POST.get('user_name')
-        nameIndb = User.objects.filter(user_name=user_name).first()
+        nameIndb = User.objects.filter(user_name=user_name)
         if nameIndb:
-            return HttpResponse(f'<p>id:{nameIndb.id},'
-                                f'用户名{nameIndb.user_name},'
-                                f'密码:{nameIndb.password}</p>'
-                                )
+            isdict = serializers.serialize('json', nameIndb)
+            return JsonResponse(isdict, safe=False)
         else:
             return HttpResponse(f'<p>输入有误,{user_name}不存在')
