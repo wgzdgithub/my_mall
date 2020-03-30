@@ -16,7 +16,9 @@ def cart_add(request):
             goods_num=request.POST.get("goods_num"),
         )
         test1.save()
-        return HttpResponse("<p>添加成功！</p>")
+        data = Cart.objects.filter(goods_id=request.POST.get("goods_id"))
+        isdict = serializers.serialize('json', data)
+        return JsonResponse(isdict, safe=False)
     else:
         return HttpResponse("<p>添加失败</p>")
 
@@ -24,11 +26,12 @@ def cart_add(request):
 @csrf_exempt
 def cart_delete(request):
     if request.method == 'POST':
-        order_id = request.POST.get('order_id')
-        nameIndb = Cart.objects.filter(order_id=order_id).first()
-        if nameIndb:
-            nameIndb.delete()
-            return HttpResponse(f'<p>{order_id}删除成功!</p>')
+        id = request.POST.get('id')
+        nameindb = Cart.objects.filter(id=id)
+        isdict = serializers.serialize('json', nameindb)
+        if nameindb:
+            nameindb.delete()
+            return JsonResponse(isdict, safe=False)
         else:
             return HttpResponse('<p>输入有误,商品不存在')
 
@@ -36,80 +39,104 @@ def cart_delete(request):
 @csrf_exempt
 def cart_change(request):
     if request.method == 'POST':
-        id = request.POST.get('id')
-        nameIndb = Cart.objects.filter(id=id).first()
-        if nameIndb:
-            nameIndb.order_id = request.POST.get('order_id')
-            nameIndb.goods_id = request.POST.get('goods_id')
-            nameIndb.goods_num = request.POST.get('goods_num')
-            nameIndb.save()
-            return HttpResponse(f'<p>{id}修改成功!</p>')
-        else:
-            return HttpResponse(f'<p>输入有误,{id}不存在')
+        try:
+            id = request.POST.get('id')
+            nameIndb = Cart.objects.filter(id=id).first()
+            if nameIndb:
+                nameIndb.order_id = request.POST.get('order_id')
+                nameIndb.goods_id = request.POST.get('goods_id')
+                nameIndb.goods_num = request.POST.get('goods_num')
+                nameIndb.save()
+                data = Cart.objects.filter(id=id)
+                isdict = serializers.serialize('json', data)
+                return JsonResponse(isdict, safe=False)
+        except:
+            return HttpResponse(f'<p>输入错误</p>')
+    else:
+        return HttpResponse(f'<p>请求错误</p>')
 
 
 @csrf_exempt
 def cart_select(request):
-    if request.method == 'POST':
-        order_id = request.POST.get('order_id')
-        nameIndb = Cart.objects.filter(order_id=order_id)
-        if nameIndb:
-            isdict = serializers.serialize('json', nameIndb)
-            return JsonResponse(isdict, safe=False)
-        else:
-            return HttpResponse(f'<p>输入有误,{order_id}不存在</p>')
+    if request.method == 'GET':
+        try:
+            id = request.GET.get('id')
+            nameindb = Cart.objects.filter(id=id)
+            if nameindb:
+                isdict = serializers.serialize('json', nameindb)
+                return JsonResponse(isdict, safe=False)
+        except:
+            return HttpResponse(f'<p>输入错误</p>')
+    else:
+        return HttpResponse(f'<p>请求错误</p>')
 
 
 @csrf_exempt
 def order_add(request):
     if request.method == 'POST':
-        test1 = Order(
-            order_id=request.POST.get('order_id'),
-            user_id=request.POST.get("user_id"),
-            status=request.POST.get("status"),
-            order_time=request.POST.get("order_time"),
-        )
-        test1.save()
-        return HttpResponse("<p>订单添加成功！</p>")
+        try:
+            test1 = Order(
+                order_id=request.POST.get('order_id'),
+                user_id=request.POST.get("user_id"),
+                status=request.POST.get("status"),
+                order_time=request.POST.get("order_time"),
+            )
+            test1.save()
+            data = Order.objects.filter(order_id=request.POST.get("order_id"))
+            isdict = serializers.serialize('json', data)
+            return JsonResponse(isdict, safe=False)
+        except:
+            return HttpResponse("<p>输入错误</p>")
     else:
-        return HttpResponse("<p>订单添加失败</p>")
+        return HttpResponse("<p>请求错误</p>")
 
 
 @csrf_exempt
 def order_delete(request):
     if request.method == 'POST':
-        order_id = request.POST.get('order_id')
-        nameIndb = Order.objects.filter(order_id=order_id).first()
-        if nameIndb:
-            nameIndb.delete()
-            return HttpResponse(f'<p>{order_id}删除成功!</p>')
-        else:
-            return HttpResponse('<p>输入有误,订单不存在')
+        try:
+            order_id = request.POST.get('order_id')
+            nameindb = Order.objects.filter(order_id=order_id)
+            isdict = serializers.serialize('json', nameindb)
+            if nameindb:
+                nameindb.delete()
+                return JsonResponse(isdict, safe=False)
+        except:
+            return HttpResponse('<p>输入错误 </p>')
+    else:
+        return HttpResponse('<p>请求错误</p>')
 
 
 @csrf_exempt
 def order_change(request):
     if request.method == 'POST':
-        order_id = request.POST.get('order_id')
-        nameIndb = Order.objects.filter(order_id=order_id).first()
-        if nameIndb:
-            nameIndb.order_id = request.POST.get('order_id')
-            nameIndb.user_id = request.POST.get('user_id')
-            nameIndb.status = request.POST.get('status')
-            nameIndb.order_time = request.POST.get('order_time')
-            nameIndb.save()
-            return HttpResponse(f'<p>{order_id}修改成功!</p>')
-        else:
-            return HttpResponse(f'<p>输入有误,{order_id}不存在')
+        try:
+            id = request.POST.get('id')
+            nameindb = Order.objects.filter(id=id).first()
+            if nameindb:
+                nameindb.order_id = request.POST.get('order_id')
+                nameindb.user_id = request.POST.get('user_id')
+                nameindb.status = request.POST.get('status')
+                nameindb.save()
+                data = Order.objects.filter(id=id)
+                isdict = serializers.serialize('json', data)
+                return JsonResponse(isdict, safe=False)
+        except:
+            return HttpResponse(f'<p>输入有误</p>')
+    else:
+        return HttpResponse(f'<p>请求错误</p>')
 
 
 @csrf_exempt
 def order_select(request):
-    if request.method == 'POST':
-        order_id = request.POST.get('order_id')
-        nameIndb = Order.objects.filter(order_id=order_id).first()
-        if nameIndb:
-            isdict = serializers.serialize('json', nameIndb)
-            return JsonResponse(isdict, safe=False)
-        else:
-            return HttpResponse(f'<p>输入有误,{order_id}不存在')
+    if request.method == 'GET':
+        try:
+            order_id = request.GET.get('order_id')
+            nameindb = Order.objects.filter(order_id=order_id)
+            if nameindb:
+                isdict = serializers.serialize('json', nameindb)
+                return JsonResponse(isdict, safe=False)
+        except:
+            return HttpResponse(f'<p>输入有误</p>')
+    else:
+        return HttpResponse(f'<p>请求错误</p>')
