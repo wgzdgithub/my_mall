@@ -10,17 +10,20 @@ from mine.models import Cart, Order
 @csrf_exempt
 def cart_add(request):
     if request.method == 'POST':
-        test1 = Cart(
-            order_id=request.POST.get('order_id'),
-            goods_id=request.POST.get("goods_id"),
-            goods_num=request.POST.get("goods_num"),
-        )
-        test1.save()
-        data = Cart.objects.filter(goods_id=request.POST.get("goods_id"))
-        isdict = serializers.serialize('json', data)
-        return JsonResponse(isdict, safe=False)
+        try:
+            test1 = Cart(
+                order_id=request.POST.get('order_id'),
+                goods_id=request.POST.get("goods_id"),
+                goods_num=request.POST.get("goods_num"),
+            )
+            test1.save()
+            data = Cart.objects.filter(goods_id=request.POST.get("goods_id"))
+            isdict = serializers.serialize('json', data)
+            return JsonResponse(isdict, safe=False)
+        except:
+            return JsonResponse({"code": 404})
     else:
-        return HttpResponse("<p>添加失败</p>")
+        return JsonResponse({"code": 404})
 
 
 @csrf_exempt
@@ -33,7 +36,9 @@ def cart_delete(request):
             nameindb.delete()
             return JsonResponse(isdict, safe=False)
         else:
-            return HttpResponse('<p>输入有误,商品不存在')
+            return JsonResponse({"code": 404})
+    else:
+        return JsonResponse({"code": 404})
 
 
 @csrf_exempt
@@ -51,9 +56,9 @@ def cart_change(request):
                 isdict = serializers.serialize('json', data)
                 return JsonResponse(isdict, safe=False)
         except:
-            return HttpResponse(f'<p>输入错误</p>')
+            return JsonResponse({"code": 404})
     else:
-        return HttpResponse(f'<p>请求错误</p>')
+        return JsonResponse({"code": 404})
 
 
 @csrf_exempt
@@ -66,9 +71,9 @@ def cart_select(request):
                 isdict = serializers.serialize('json', nameindb)
                 return JsonResponse(isdict, safe=False)
         except:
-            return HttpResponse(f'<p>输入错误</p>')
+            return JsonResponse({"code": 404})
     else:
-        return HttpResponse(f'<p>请求错误</p>')
+        return JsonResponse({"code": 404})
 
 
 @csrf_exempt
@@ -86,9 +91,9 @@ def order_add(request):
             isdict = serializers.serialize('json', data)
             return JsonResponse(isdict, safe=False)
         except:
-            return HttpResponse("<p>输入错误</p>")
+            return JsonResponse({"code": 404})
     else:
-        return HttpResponse("<p>请求错误</p>")
+        return JsonResponse({"code": 404})
 
 
 @csrf_exempt
@@ -102,9 +107,9 @@ def order_delete(request):
                 nameindb.delete()
                 return JsonResponse(isdict, safe=False)
         except:
-            return HttpResponse('<p>输入错误 </p>')
+            return JsonResponse({"code": 404})
     else:
-        return HttpResponse('<p>请求错误</p>')
+        return JsonResponse({"code": 404})
 
 
 @csrf_exempt
@@ -122,9 +127,9 @@ def order_change(request):
                 isdict = serializers.serialize('json', data)
                 return JsonResponse(isdict, safe=False)
         except:
-            return HttpResponse(f'<p>输入有误</p>')
+            return JsonResponse({"code": 404})
     else:
-        return HttpResponse(f'<p>请求错误</p>')
+        return JsonResponse({"code": 404})
 
 
 @csrf_exempt
@@ -137,6 +142,6 @@ def order_select(request):
                 isdict = serializers.serialize('json', nameindb)
                 return JsonResponse(isdict, safe=False)
         except:
-            return HttpResponse(f'<p>输入有误</p>')
+            return JsonResponse({"code": 404})
     else:
-        return HttpResponse(f'<p>请求错误</p>')
+        return JsonResponse({"code": 404})

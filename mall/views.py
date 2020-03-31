@@ -21,9 +21,9 @@ def add(request):
             isdict = serializers.serialize('json', data)
             return JsonResponse(isdict, safe=False)
         except:
-            return HttpResponse("<p>商品添加失败</p>")
+            return JsonResponse({"code": 404})
     else:
-        return HttpResponse("<p>请求错误</p>")
+        return JsonResponse({"code": 404})
 
 
 @csrf_exempt
@@ -37,9 +37,9 @@ def delete(request):
                 data.delete()
                 return JsonResponse(isdict, safe=False)
         except:
-            return HttpResponse('<p>输入有误</p>')
+            return JsonResponse({"code": 404})
         else:
-            return HttpResponse('<p>请求错误</p>')
+            return JsonResponse({"code": 404})
 
 
 @csrf_exempt
@@ -57,18 +57,21 @@ def change(request):
                 isdict = serializers.serialize('json', data)
                 return JsonResponse(isdict, safe=False)
         except:
-            return HttpResponse(f'<p>输入错误</p>')
+            return JsonResponse({"code": 404})
     else:
-        return HttpResponse(f'<p>请求错误</p>')
+        return JsonResponse({"code": 404})
 
 
 @csrf_exempt
 def select(request):
     if request.method == 'GET':
-        uid = request.GET.get('uid')
-        nameIndb = Product.objects.filter(uid=uid)
-        if nameIndb:
-            isdict = serializers.serialize('json', nameIndb)
-            return JsonResponse(isdict, safe=False)
-        else:
-            return HttpResponse(f'<p>输入有误,{uid}不存在')
+        try:
+            uid = request.GET.get('uid')
+            nameIndb = Product.objects.filter(uid=uid)
+            if nameIndb:
+                isdict = serializers.serialize('json', nameIndb)
+                return JsonResponse(isdict, safe=False)
+        except:
+            return JsonResponse({"code": 404})
+    else:
+        return JsonResponse({"code": 404})

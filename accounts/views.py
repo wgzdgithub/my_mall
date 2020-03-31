@@ -21,9 +21,9 @@ def add(request):
             isdict = serializers.serialize('json', data)
             return JsonResponse(isdict, safe=False)
         except:
-            return HttpResponse("添加失败")
+            return JsonResponse({"code": 404})
     else:
-        return HttpResponse("请求错误")
+        return JsonResponse({"code": 404})
 
 
 @csrf_exempt
@@ -37,9 +37,9 @@ def delete(request):
                 nameIndb.delete()
                 return JsonResponse(isdict, safe=False)
         except:
-            return HttpResponse('<p>错误404</p>')
+            JsonResponse({"code": 404})
     else:
-        return HttpResponse('<p>请求错误404</p>')
+        return JsonResponse({"code": 404})
 
 
 @csrf_exempt
@@ -56,9 +56,9 @@ def change(request):
                 isdict = serializers.serialize('json', data)
                 return JsonResponse(isdict, safe=False)
         except:
-            return HttpResponse(f'<p>输入有误</p>')
+            return JsonResponse({"code": 404})
     else:
-        return HttpResponse(f'<p>请求错误</p>')
+        return JsonResponse({"code": 404})
 
 
 @csrf_exempt
@@ -71,6 +71,6 @@ def select(request):
                 isdict = serializers.serialize('json', data)
                 return JsonResponse(isdict, safe=False)
         except:
-            HttpResponse(f'<p>输入错误</p>')
+            return JsonResponse({"code": 404})
     else:
-        return HttpResponse(f'<p>请求错误</p>')
+        return JsonResponse({"code": 404})
